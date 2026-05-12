@@ -11,6 +11,11 @@ const preview: Preview = {
 			},
 		},
 		layout: 'padded',
+		options: {
+			storySort: {
+				order: ['Design System', ['Atoms', 'Molecules', 'Organisms', 'Advanced']],
+			},
+		},
 	},
 	decorators: [
 		(Story) => (
