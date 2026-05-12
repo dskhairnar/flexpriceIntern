@@ -1,4 +1,5 @@
 import type { Preview } from '@storybook/react';
+import { TooltipProvider } from '@radix-ui/react-tooltip';
 import '../src/index.css';
 
 const preview: Preview = {
@@ -11,6 +12,13 @@ const preview: Preview = {
 		},
 		layout: 'padded',
 	},
+	decorators: [
+		(Story) => (
+			<TooltipProvider delayDuration={300}>
+				<Story />
+			</TooltipProvider>
+		),
+	],
 };
 
 export default preview;
