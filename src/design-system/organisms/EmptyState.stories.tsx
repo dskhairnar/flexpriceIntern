@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
+import { expect, fn, userEvent, within } from '@storybook/test';
 import { Inbox } from 'lucide-react';
 import { EmptyState } from './EmptyState';
 
@@ -24,6 +24,13 @@ export const Default: Story = {
 		description: 'When your first invoice is generated it will appear in this list.',
 		actionLabel: 'Create invoice',
 		onAction: fn(),
+	},
+	play: async ({ args, canvasElement, step }) => {
+		const canvas = within(canvasElement);
+		await step('Invokes the CTA action', async () => {
+			await userEvent.click(canvas.getByRole('button', { name: /create invoice/i }));
+			await expect(args.onAction).toHaveBeenCalled();
+		});
 	},
 };
 

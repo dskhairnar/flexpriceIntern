@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, userEvent, within } from '@storybook/test';
 import { Button } from './Button';
 import { DesignTooltip } from './Tooltip';
 
@@ -21,6 +22,13 @@ export const Default: Story = {
 		delayDuration: 400,
 		side: 'top',
 		children: <Button variant='ghost'>Hover for details</Button>,
+	},
+	play: async ({ canvasElement, step }) => {
+		const canvas = within(canvasElement);
+		await step('Shows tooltip content on hover', async () => {
+			await userEvent.hover(canvas.getByRole('button', { name: /hover for details/i }));
+			await expect(await within(document.body).findByText(/usage is metered/i)).toBeVisible();
+		});
 	},
 };
 

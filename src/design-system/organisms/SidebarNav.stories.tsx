@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, userEvent, within } from '@storybook/test';
 import { MemoryRouter } from 'react-router-dom';
 import { CreditCard, FileText, LayoutDashboard, Users } from 'lucide-react';
 import { SidebarNav } from './SidebarNav';
@@ -36,6 +37,13 @@ export const Default: Story = {
 	args: {
 		items,
 		defaultCollapsed: false,
+	},
+	play: async ({ canvasElement, step }) => {
+		const canvas = within(canvasElement);
+		await step('Collapses and expands navigation labels', async () => {
+			await userEvent.click(canvas.getByRole('button', { name: /collapse navigation/i }));
+			await expect(canvas.getByRole('button', { name: /expand navigation/i })).toBeVisible();
+		});
 	},
 };
 

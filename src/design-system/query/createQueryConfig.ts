@@ -17,6 +17,10 @@ export const QUERY_PRESET_STATIC = {
 	gcTime: 60 * 60 * 1000,
 } as const;
 
+export const REALTIME = QUERY_PRESET_REALTIME;
+export const DEFAULT = QUERY_PRESET_DEFAULT;
+export const STATIC = QUERY_PRESET_STATIC;
+
 export type QueryPresetKey = 'REALTIME' | 'DEFAULT' | 'STATIC';
 
 export const QUERY_PRESETS: Record<QueryPresetKey, { staleTime: number; gcTime: number }> = {

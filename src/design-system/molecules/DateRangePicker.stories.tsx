@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, userEvent, within } from '@storybook/test';
 import { useState } from 'react';
 import { DateRangePicker, type DateRangeValue } from './DateRangePicker';
 
@@ -18,6 +19,15 @@ export const Default: Story = {
 	render: function R() {
 		const [value, setValue] = useState<DateRangeValue>({ start: '2026-01-01', end: '2026-01-31' });
 		return <DateRangePicker value={value} onChange={setValue} />;
+	},
+	play: async ({ canvasElement, step }) => {
+		const canvas = within(canvasElement);
+		await step('Updates native date inputs', async () => {
+			const start = canvas.getByLabelText(/start/i);
+			await userEvent.clear(start);
+			await userEvent.type(start, '2026-02-01');
+			await expect(start).toHaveValue('2026-02-01');
+		});
 	},
 };
 

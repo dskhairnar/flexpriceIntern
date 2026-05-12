@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, userEvent, within } from '@storybook/test';
 import { useMemo, useState } from 'react';
 import { DataTable, type SortState } from './DataTable';
 
@@ -50,6 +51,14 @@ export const Default: Story = {
 				totalRows={sorted.length}
 			/>
 		);
+	},
+	play: async ({ canvasElement, step }) => {
+		const canvas = within(canvasElement);
+		await step('Sorts when a sortable column header is clicked', async () => {
+			await userEvent.click(canvas.getByRole('button', { name: /customer/i }));
+			const rows = canvas.getAllByRole('row');
+			await expect(within(rows[1]).getByText('Contoso')).toBeVisible();
+		});
 	},
 };
 
@@ -108,6 +117,13 @@ export const Pagination: Story = {
 				onPageChange={setPage}
 			/>
 		);
+	},
+	play: async ({ canvasElement, step }) => {
+		const canvas = within(canvasElement);
+		await step('Moves to the next page', async () => {
+			await userEvent.click(canvas.getByRole('button', { name: /next/i }));
+			await expect(canvas.getByText('Customer 11')).toBeVisible();
+		});
 	},
 };
 
