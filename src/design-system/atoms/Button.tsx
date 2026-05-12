@@ -35,13 +35,23 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
 		loading?: boolean;
 	};
 
+function isRenderableNode(value: React.ReactNode): boolean {
+	if (value === null || value === undefined || typeof value === 'boolean') return true;
+	if (typeof value === 'string' || typeof value === 'number') return true;
+	if (React.isValidElement(value)) return true;
+	if (Array.isArray(value)) return value.every(isRenderableNode);
+	return false;
+}
+
 /**
  * Primary action control for forms and CTAs. Supports FlexPrice-like variants,
  * three sizes, loading state, and Radix `asChild` composition.
  */
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 	({ className, variant, size, asChild = false, loading = false, disabled, children, ...props }, ref) => {
-		const Comp = asChild ? Slot : 'button';
+		const safeChildren = isRenderableNode(children) ? children : null;
+		const canRenderAsChild = asChild && !loading && React.isValidElement(safeChildren);
+		const Comp = canRenderAsChild ? Slot : 'button';
 		return (
 			<Comp
 				className={cn(buttonVariants({ variant, size, className }))}
@@ -51,7 +61,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 				{...props}
 			>
 				{loading ? <Loader2 className='animate-spin' aria-hidden /> : null}
-				{children}
+				{safeChildren}
 			</Comp>
 		);
 	},

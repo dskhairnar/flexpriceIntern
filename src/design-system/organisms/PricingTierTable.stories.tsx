@@ -13,6 +13,7 @@ const meta = {
 	tags: ['autodocs'],
 	argTypes: {
 		title: { control: 'text' },
+		tiers: { table: { disable: true } },
 	},
 } satisfies Meta<typeof PricingTierTable>;
 
@@ -21,18 +22,18 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
 	args: {
-		title: 'Graduated · API events',
+		title: 'Graduated pricing - API events',
 		tiers,
 	},
 };
 
 export const VolumeTiers: Story = {
 	args: {
-		title: 'Volume · Seats',
+		title: 'Volume pricing - Seats',
 		tiers: [
-			{ tier: 'A', from: 1, to: 50, unitPrice: '$12.00', flatFee: '—' },
-			{ tier: 'B', from: 51, to: 200, unitPrice: '$10.00', flatFee: '—' },
-			{ tier: 'C', from: 201, to: null, unitPrice: '$8.00', flatFee: '—' },
+			{ tier: 'A', from: 1, to: 50, unitPrice: '$12.00', flatFee: '-' },
+			{ tier: 'B', from: 51, to: 200, unitPrice: '$10.00', flatFee: '-' },
+			{ tier: 'C', from: 201, to: null, unitPrice: '$8.00', flatFee: '-' },
 		],
 	},
 };

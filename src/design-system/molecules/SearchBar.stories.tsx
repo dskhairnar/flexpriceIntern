@@ -10,6 +10,7 @@ const meta = {
 	argTypes: {
 		debounceMs: { control: { type: 'number', min: 0, max: 2000, step: 50 } },
 		placeholder: { control: 'text' },
+		onSearch: { table: { disable: true } },
 	},
 } satisfies Meta<typeof SearchBar>;
 
@@ -17,26 +18,26 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-	args: { debounceMs: 300, placeholder: 'Search customers…', onSearch: fn() },
+	args: { debounceMs: 300, placeholder: 'Search customers...', onSearch: fn() },
 	render: function R(args) {
 		const [q, setQ] = useState('');
 		return (
 			<div className='space-y-2'>
-				<SearchBar {...args} onSearch={(v) => { setQ(v); args.onSearch(v); }} />
-				<p className='text-xs text-muted-foreground'>Debounced query: {q || '—'}</p>
+				<SearchBar {...args} onSearch={(value) => { setQ(value); args.onSearch(value); }} />
+				<p className='text-xs text-muted-foreground'>Debounced query: {q || '-'}</p>
 			</div>
 		);
 	},
 };
 
 export const InteractionClear: Story = {
-	args: { onSearch: fn(), placeholder: 'Search…' },
+	args: { debounceMs: 300, onSearch: fn(), placeholder: 'Search...' },
 	render: function R(args) {
 		const [q, setQ] = useState('');
 		return (
 			<div className='space-y-2'>
-				<SearchBar {...args} onSearch={(v) => { setQ(v); args.onSearch(v); }} placeholder='Search…' />
-				<p className='text-xs text-muted-foreground'>Last query: {q || '—'}</p>
+				<SearchBar {...args} onSearch={(value) => { setQ(value); args.onSearch(value); }} />
+				<p className='text-xs text-muted-foreground'>Last query: {q || '-'}</p>
 			</div>
 		);
 	},

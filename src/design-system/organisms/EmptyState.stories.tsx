@@ -8,6 +8,7 @@ const meta = {
 	component: EmptyState,
 	tags: ['autodocs'],
 	argTypes: {
+		icon: { table: { disable: true } },
 		title: { control: 'text' },
 		description: { control: 'text' },
 		actionLabel: { control: 'text' },
@@ -25,6 +26,7 @@ export const Default: Story = {
 		actionLabel: 'Create invoice',
 		onAction: fn(),
 	},
+	render: (args) => <EmptyState {...args} icon={Inbox} />,
 	play: async ({ args, canvasElement, step }) => {
 		const canvas = within(canvasElement);
 		await step('Invokes the CTA action', async () => {
@@ -40,4 +42,5 @@ export const WithoutAction: Story = {
 		title: 'All caught up',
 		description: 'There is nothing to review for this period.',
 	},
+	render: (args) => <EmptyState {...args} icon={Inbox} />,
 };

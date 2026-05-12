@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { expect, userEvent, within } from '@storybook/test';
 import { Input } from './Input';
 
@@ -21,6 +21,7 @@ const meta = {
 		label: { control: 'text' },
 		placeholder: { control: 'text' },
 		error: { control: 'text' },
+		prefix: { table: { disable: true } },
 	},
 } satisfies Meta<typeof Input>;
 
@@ -52,18 +53,30 @@ export const WithError: Story = {
 };
 
 export const CurrencyPrefix: Story = {
-	render: function Currency() {
-		const [v, setV] = useState('49.00');
+	args: {
+		label: 'Unit price',
+		value: '49.00',
+		size: 'md',
+		type: 'text',
+	},
+	render: function Currency(args) {
+		const [v, setV] = useState(String(args.value ?? '49.00'));
+		useEffect(() => setV(String(args.value ?? '')), [args.value]);
 		return (
-			<Input label='Unit price' value={v} onChange={(e) => setV(e.target.value)} prefix={<span className='text-muted-foreground'>$</span>} />
+			<Input {...args} value={v} onChange={(e) => setV(e.target.value)} prefix={<span className='text-muted-foreground'>$</span>} />
 		);
 	},
 };
 
 export const InteractionType: Story = {
-	render: function Controlled() {
+	args: {
+		label: 'Memo',
+		placeholder: 'Add an internal note',
+		size: 'md',
+	},
+	render: function Controlled(args) {
 		const [v, setV] = useState('');
-		return <Input label='Memo' placeholder='Add an internal note' value={v} onChange={(e) => setV(e.target.value)} />;
+		return <Input {...args} value={v} onChange={(e) => setV(e.target.value)} />;
 	},
 	play: async ({ canvasElement, step }) => {
 		const canvas = within(canvasElement);

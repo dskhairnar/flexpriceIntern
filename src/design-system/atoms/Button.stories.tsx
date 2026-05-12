@@ -14,6 +14,7 @@ const meta = {
 		size: { control: 'select', options: ['sm', 'md', 'lg'] },
 		loading: { control: 'boolean' },
 		disabled: { control: 'boolean' },
+		asChild: { table: { disable: true } },
 		children: { control: 'text' },
 	},
 } satisfies Meta<typeof Button>;
@@ -30,24 +31,58 @@ export const Default: Story = {
 };
 
 export const Variants: Story = {
-	render: () => (
-		<div className='flex flex-wrap gap-3'>
-			<Button variant='primary'>Primary</Button>
-			<Button variant='secondary'>Secondary</Button>
-			<Button variant='ghost'>Ghost</Button>
-			<Button variant='danger'>Danger</Button>
+	parameters: {
+		controls: { exclude: ['variant'] },
+	},
+	args: {
+		children: 'Button',
+		size: 'md',
+		loading: false,
+		disabled: false,
+	},
+	render: ({ children, size, loading, disabled }) => (
+		<div className='space-y-4'>
+			<div className='flex flex-wrap gap-3'>
+				<Button variant='primary' size={size} loading={loading} disabled={disabled}>
+					{children} primary
+				</Button>
+				<Button variant='secondary' size={size} loading={loading} disabled={disabled}>
+					{children} secondary
+				</Button>
+				<Button variant='ghost' size={size} loading={loading} disabled={disabled}>
+					{children} ghost
+				</Button>
+				<Button variant='danger' size={size} loading={loading} disabled={disabled}>
+					{children} danger
+				</Button>
+			</div>
+			<p className='text-xs text-muted-foreground'>Use Controls to apply size, loading, disabled, and label text across every variant.</p>
 		</div>
 	),
 };
 
 export const Sizes: Story = {
-	render: () => (
-		<div className='flex flex-wrap items-center gap-3'>
-			<Button size='sm'>
-				Small
-			</Button>
-			<Button size='md'>Medium</Button>
-			<Button size='lg'>Large</Button>
+	args: {
+		children: 'Resizable button',
+		variant: 'primary',
+		size: 'md',
+		loading: false,
+		disabled: false,
+	},
+	render: (args) => (
+		<div className='space-y-4'>
+			<Button {...args} />
+			<div className='flex flex-wrap items-center gap-3 border-t border-border pt-4'>
+				<Button variant={args.variant} size='sm' loading={args.loading} disabled={args.disabled}>
+					Small reference
+				</Button>
+				<Button variant={args.variant} size='md' loading={args.loading} disabled={args.disabled}>
+					Medium reference
+				</Button>
+				<Button variant={args.variant} size='lg' loading={args.loading} disabled={args.disabled}>
+					Large reference
+				</Button>
+			</div>
 		</div>
 	),
 };

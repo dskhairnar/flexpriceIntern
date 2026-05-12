@@ -28,10 +28,13 @@ export type BadgeProps = React.HTMLAttributes<HTMLSpanElement> &
  * Compact status label for plans, invoices, subscriptions, and metadata chips.
  */
 export function Badge({ className, variant, icon, children, ...props }: BadgeProps) {
+	const safeIcon = React.isValidElement(icon) ? icon : null;
+	const safeChildren = React.isValidElement(children) || typeof children === 'string' || typeof children === 'number' ? children : null;
+
 	return (
 		<span className={cn(badgeVariants({ variant }), className)} {...props}>
-			{icon}
-			{children}
+			{safeIcon}
+			{safeChildren}
 		</span>
 	);
 }

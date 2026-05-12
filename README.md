@@ -36,8 +36,9 @@ The Storybook is organized from smaller primitives to full sections:
 - Molecules: MetricCard, DataTable, InvoiceStatusBadge, UsageBar, DateRangePicker, SearchBar
 - Organisms: SidebarNav, PricingTierTable, EmptyState
 - Advanced: DataTable wired to `useFilterStore`, query caching presets
+- Showcase: a composed FlexPrice billing console that brings the system together in one realistic screen
 
-Storybook navigation is sorted as `Atoms -> Molecules -> Organisms -> Advanced`.
+Storybook navigation is sorted as `Atoms -> Molecules -> Organisms -> Advanced -> Showcase`.
 
 ## Advanced Challenges
 

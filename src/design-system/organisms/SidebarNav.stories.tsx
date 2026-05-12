@@ -26,6 +26,7 @@ const meta = {
 		),
 	],
 	argTypes: {
+		items: { table: { disable: true } },
 		defaultCollapsed: { control: 'boolean' },
 	},
 } satisfies Meta<typeof SidebarNav>;
@@ -38,6 +39,7 @@ export const Default: Story = {
 		items,
 		defaultCollapsed: false,
 	},
+	render: (args) => <SidebarNav {...args} items={items} />,
 	play: async ({ canvasElement, step }) => {
 		const canvas = within(canvasElement);
 		await step('Collapses and expands navigation labels', async () => {
@@ -52,4 +54,5 @@ export const Collapsed: Story = {
 		items,
 		defaultCollapsed: true,
 	},
+	render: (args) => <SidebarNav {...args} items={items} />,
 };

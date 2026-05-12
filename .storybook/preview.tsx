@@ -13,7 +13,7 @@ const preview: Preview = {
 		layout: 'padded',
 		options: {
 			storySort: {
-				order: ['Design System', ['Atoms', 'Molecules', 'Organisms', 'Advanced']],
+				order: ['Design System', ['Atoms', 'Molecules', 'Organisms', 'Advanced', 'Showcase']],
 			},
 		},
 	},

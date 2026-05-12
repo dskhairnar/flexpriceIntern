@@ -46,9 +46,9 @@ export const SubscriptionStatuses: Story = {
 };
 
 export const WithIcon: Story = {
-	args: {
-		children: 'Premium',
-		variant: 'outline',
-		icon: <Sparkles className='size-3.5' aria-hidden />,
-	},
+	render: () => (
+		<Badge variant='outline' icon={<Sparkles className='size-3.5' aria-hidden />}>
+			Premium
+		</Badge>
+	),
 };

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { useArgs } from '@storybook/preview-api';
 import { useState } from 'react';
 import { expect, userEvent, within } from '@storybook/test';
 import { SearchableSelect } from './Select';
@@ -15,8 +16,15 @@ const meta = {
 	component: SearchableSelect,
 	tags: ['autodocs'],
 	argTypes: {
+		label: { control: 'text' },
 		disabled: { control: 'boolean' },
 		placeholder: { control: 'text' },
+		value: {
+			control: 'select',
+			options: [null, 'cus_1', 'cus_2', 'cus_3', 'cus_4'],
+		},
+		options: { table: { disable: true } },
+		onChange: { table: { disable: true } },
 	},
 } satisfies Meta<typeof SearchableSelect>;
 
@@ -24,33 +32,30 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-	args: { options, value: null, onChange: () => {} },
-	render: function R() {
-		const [v, setV] = useState<string | null>(null);
-		return <SearchableSelect label='Customer' options={options} value={v} onChange={setV} />;
+	args: { label: 'Customer', options, value: null, onChange: () => {}, placeholder: 'Select customer...' },
+	render: function R(args) {
+		const [, updateArgs] = useArgs();
+		return <SearchableSelect {...args} onChange={(next) => { updateArgs({ value: next }); args.onChange(next); }} />;
 	},
 };
 
 export const WithValue: Story = {
-	args: { options, value: null, onChange: () => {} },
-	render: function R() {
-		const [v, setV] = useState<string | null>('cus_2');
-		return <SearchableSelect options={options} value={v} onChange={setV} />;
+	args: { label: 'Customer', options, value: 'cus_2', onChange: () => {}, placeholder: 'Select customer...' },
+	render: function R(args) {
+		const [, updateArgs] = useArgs();
+		return <SearchableSelect {...args} onChange={(next) => { updateArgs({ value: next }); args.onChange(next); }} />;
 	},
 };
 
 export const Disabled: Story = {
-	args: { options, value: 'cus_1', onChange: () => {}, disabled: true },
-	render: function R() {
-		return <SearchableSelect options={options} value='cus_1' onChange={() => {}} disabled />;
-	},
+	args: { label: 'Customer', options, value: 'cus_1', onChange: () => {}, disabled: true, placeholder: 'Select customer...' },
 };
 
 export const InteractionSelectOption: Story = {
-	args: { options, value: null, onChange: () => {} },
-	render: function R() {
+	args: { label: 'Customer', options, value: null, onChange: () => {}, placeholder: 'Select customer...' },
+	render: function R(args) {
 		const [v, setV] = useState<string | null>(null);
-		return <SearchableSelect label='Customer' options={options} value={v} onChange={setV} />;
+		return <SearchableSelect {...args} value={v} onChange={(next) => { setV(next); args.onChange(next); }} />;
 	},
 	play: async ({ canvasElement, step }) => {
 		const canvas = within(canvasElement);
