@@ -26,29 +26,53 @@ export const Default: Story = {
 };
 
 export const PlanStatuses: Story = {
-	render: () => (
+	args: {
+		variant: 'success',
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Use the variant control to preview plan status labels across badge treatments.',
+			},
+		},
+	},
+	render: ({ variant }) => (
 		<div className='flex flex-wrap gap-2'>
-			<Badge variant='success'>Plan - Active</Badge>
-			<Badge variant='muted'>Plan - Archived</Badge>
+			<Badge variant={variant}>Plan - Active</Badge>
+			<Badge variant={variant}>Plan - Archived</Badge>
 		</div>
 	),
 };
 
 export const SubscriptionStatuses: Story = {
-	render: () => (
+	args: {
+		variant: 'success',
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Use the variant control to preview subscription status labels across badge treatments.',
+			},
+		},
+	},
+	render: ({ variant }) => (
 		<div className='flex flex-wrap gap-2'>
-			<Badge variant='success'>Trialing</Badge>
-			<Badge variant='default'>Active</Badge>
-			<Badge variant='warning'>Past due</Badge>
-			<Badge variant='danger'>Canceled</Badge>
+			<Badge variant={variant}>Trialing</Badge>
+			<Badge variant={variant}>Active</Badge>
+			<Badge variant={variant}>Past due</Badge>
+			<Badge variant={variant}>Canceled</Badge>
 		</div>
 	),
 };
 
 export const WithIcon: Story = {
-	render: () => (
-		<Badge variant='outline' icon={<Sparkles className='size-3.5' aria-hidden />}>
-			Premium
+	args: {
+		children: 'Premium',
+		variant: 'outline',
+	},
+	render: ({ children, variant }) => (
+		<Badge variant={variant} icon={<Sparkles className='size-3.5' aria-hidden />}>
+			{children}
 		</Badge>
 	),
 };

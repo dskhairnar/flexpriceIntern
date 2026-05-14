@@ -10,7 +10,7 @@ const meta = {
 	argTypes: {
 		delayDuration: { control: { type: 'number', min: 0, max: 2000, step: 100 } },
 		side: { control: 'select', options: ['top', 'right', 'bottom', 'left'] },
-		children: { table: { disable: true } },
+		children: { control: 'text' },
 	},
 } satisfies Meta<typeof DesignTooltip>;
 
@@ -24,9 +24,9 @@ export const Default: Story = {
 		delayDuration: 400,
 		side: 'top',
 	},
-	render: (args) => (
+	render: ({ children, ...args }) => (
 		<DesignTooltip {...args}>
-			<Button variant='ghost'>Hover for details</Button>
+			<Button variant='ghost'>{children}</Button>
 		</DesignTooltip>
 	),
 	play: async ({ canvasElement, step }) => {
@@ -43,10 +43,11 @@ export const Informational: Story = {
 		children: 'Tax basis',
 		content: 'Tax is calculated from the customer billing address on file.',
 		delayDuration: 600,
+		side: 'top',
 	},
-	render: (args) => (
+	render: ({ children, ...args }) => (
 		<DesignTooltip {...args}>
-			<span className='cursor-default border-b border-dotted border-muted-foreground text-sm'>Tax basis</span>
+			<span className='cursor-default border-b border-dotted border-muted-foreground text-sm'>{children}</span>
 		</DesignTooltip>
 	),
 };
