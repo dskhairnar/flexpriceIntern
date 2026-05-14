@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, userEvent, within } from '@storybook/test';
 import { useMemo, useState } from 'react';
-import { DataTable, type SortState } from './DataTable';
+import { DataTable, type ColumnDef, type SortState } from './DataTable';
 
 type Row = { id: string; customer: string; amount: string; status: string };
 
@@ -11,10 +11,24 @@ const baseRows: Row[] = [
 	{ id: 'inv_3', customer: 'Fabrikam', amount: '$240.00', status: 'draft' },
 ];
 
+const invoiceColumns: ColumnDef<Row>[] = [
+	{ id: 'customer', header: 'Customer', sortable: true, accessorKey: 'customer' },
+	{ id: 'amount', header: 'Amount', sortable: true, accessorKey: 'amount' },
+	{ id: 'status', header: 'Status', accessorKey: 'status' },
+];
+
 const meta: Meta<typeof DataTable<Row>> = {
 	title: 'Design System/Molecules/DataTable',
 	component: DataTable,
 	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component:
+					'Production billing table with keyboard-sortable headers, loading and empty states, pagination, and optional virtualization for high-volume accounts.',
+			},
+		},
+	},
 };
 
 export default meta;
@@ -37,11 +51,7 @@ export const Default: Story = {
 		}, [sort]);
 		return (
 			<DataTable<Row>
-				columns={[
-					{ id: 'customer', header: 'Customer', sortable: true, accessorKey: 'customer' },
-					{ id: 'amount', header: 'Amount', sortable: true, accessorKey: 'amount' },
-					{ id: 'status', header: 'Status', accessorKey: 'status' },
-				]}
+				columns={invoiceColumns}
 				rows={sorted}
 				getRowId={(r) => r.id}
 				sort={sort}
@@ -62,25 +72,77 @@ export const Default: Story = {
 	},
 };
 
-export const Loading: Story = {
+export const SlowApiResponse: Story = {
 	args: {
-		columns: [
-			{ id: 'customer', header: 'Customer', accessorKey: 'customer' },
-			{ id: 'amount', header: 'Amount', accessorKey: 'amount' },
-		],
+		columns: invoiceColumns,
 		rows: [],
 		loading: true,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Slow API response state: keeps the table shape visible while invoice data is pending.',
+			},
+		},
 	},
 };
 
 export const Empty: Story = {
 	args: {
-		columns: [
-			{ id: 'customer', header: 'Customer', accessorKey: 'customer' },
-			{ id: 'amount', header: 'Amount', accessorKey: 'amount' },
-		],
+		columns: invoiceColumns,
 		rows: [],
 		emptyMessage: 'No invoices for this filter.',
+	},
+};
+
+export const NoPermissions: Story = {
+	args: {
+		columns: invoiceColumns,
+		rows: [],
+		emptyMessage: 'You do not have permission to view invoices for this workspace.',
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Permission-denied empty state for restricted billing roles.',
+			},
+		},
+	},
+};
+
+export const ArchivedPlan: Story = {
+	args: {
+		columns: invoiceColumns,
+		rows: [
+			{ id: 'inv_arch_1', customer: 'Atlas Cloud', amount: '$12,980.00', status: 'archived plan' },
+			{ id: 'inv_arch_2', customer: 'Northstar AI', amount: '$8,420.00', status: 'final invoice' },
+		],
+		getRowId: (r: Row) => r.id,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Archived subscription plans still need readable invoice history and predictable table behavior.',
+			},
+		},
+	},
+};
+
+export const BillingExceeded: Story = {
+	args: {
+		columns: invoiceColumns,
+		rows: [
+			{ id: 'inv_over_1', customer: 'Kite Fintech', amount: '$18,400.00', status: 'usage exceeded' },
+			{ id: 'inv_over_2', customer: 'Orbit Labs', amount: '$7,920.00', status: 'credit limit exceeded' },
+		],
+		getRowId: (r: Row) => r.id,
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Billing exception state for accounts that exceeded entitlement or credit limits.',
+			},
+		},
 	},
 };
 
@@ -104,11 +166,7 @@ export const Pagination: Story = {
 		const slice = all.slice((page - 1) * pageSize, page * pageSize);
 		return (
 			<DataTable<Row>
-				columns={[
-					{ id: 'customer', header: 'Customer', accessorKey: 'customer' },
-					{ id: 'amount', header: 'Amount', accessorKey: 'amount' },
-					{ id: 'status', header: 'Status', accessorKey: 'status' },
-				]}
+				columns={invoiceColumns}
 				rows={slice}
 				getRowId={(r) => r.id}
 				page={page}
@@ -127,7 +185,7 @@ export const Pagination: Story = {
 	},
 };
 
-export const VirtualizedTenThousandRows: Story = {
+export const EnterpriseCustomerWithTenThousandInvoices: Story = {
 	args: {},
 	render: function Virtual() {
 		const rows = useMemo(
@@ -135,7 +193,7 @@ export const VirtualizedTenThousandRows: Story = {
 				Array.from({ length: 10_000 }).map(
 					(_, i): Row => ({
 						id: `row_${i}`,
-						customer: `Customer ${i + 1}`,
+						customer: `Enterprise customer ${i + 1}`,
 						amount: `$${((i % 50) + 1) * 25}.00`,
 						status: i % 3 === 0 ? 'paid' : 'open',
 					}),
@@ -148,16 +206,19 @@ export const VirtualizedTenThousandRows: Story = {
 				virtual
 				virtualRowHeight={40}
 				scrollHeight={420}
-				columns={[
-					{ id: 'customer', header: 'Customer', sortable: true, accessorKey: 'customer' },
-					{ id: 'amount', header: 'Amount', sortable: true, accessorKey: 'amount' },
-					{ id: 'status', header: 'Status', accessorKey: 'status' },
-				]}
+				columns={invoiceColumns}
 				rows={rows}
 				getRowId={(r) => r.id}
 				sort={sort}
 				onSortChange={setSort}
 			/>
 		);
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'High-volume SaaS account with 10,000 invoices rendered through TanStack virtualization.',
+			},
+		},
 	},
 };

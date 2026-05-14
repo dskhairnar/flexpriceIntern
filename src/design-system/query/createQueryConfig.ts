@@ -1,5 +1,5 @@
 
-/** Fresh data — refetch on mount/focus; use for live dashboards. */
+/** Fresh data - refetch on mount/focus; use for live dashboards. */
 export const QUERY_PRESET_REALTIME = {
 	staleTime: 0,
 	gcTime: 5 * 60 * 1000,

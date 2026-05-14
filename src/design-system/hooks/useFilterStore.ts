@@ -81,7 +81,7 @@ export const filterRootStore = create<RootState>((set, get) => ({
  * Persists table and page filters per route in `sessionStorage`, mirrors a compact `fp`
  * fingerprint into the query string, and exposes a small imperative API.
  *
- * @param routeKey — Stable key for the page, e.g. `"invoices"` or `"customers"`.
+ * @param routeKey - Stable key for the page, e.g. `"invoices"` or `"customers"`.
  * @returns `filters`, `setFilter`, `resetFilters`, `getFilters`, and `fingerprint` for the current snapshot.
  */
 export function useFilterStore(routeKey: string) {

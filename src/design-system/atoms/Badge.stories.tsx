@@ -28,8 +28,8 @@ export const Default: Story = {
 export const PlanStatuses: Story = {
 	render: () => (
 		<div className='flex flex-wrap gap-2'>
-			<Badge variant='success'>Plan · Active</Badge>
-			<Badge variant='muted'>Plan · Archived</Badge>
+			<Badge variant='success'>Plan - Active</Badge>
+			<Badge variant='muted'>Plan - Archived</Badge>
 		</div>
 	),
 };

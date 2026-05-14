@@ -16,7 +16,7 @@ export type SearchBarProps = {
 /**
  * Debounced search field with clear control for table and analytics toolbars.
  */
-export function SearchBar({ value: controlled, debounceMs = 300, onSearch, placeholder = 'Search…', className }: SearchBarProps) {
+export function SearchBar({ value: controlled, debounceMs = 300, onSearch, placeholder = 'Search...', className }: SearchBarProps) {
 	const [inner, setInner] = React.useState(controlled ?? '');
 	React.useEffect(() => {
 		if (controlled !== undefined) setInner(controlled);
@@ -51,7 +51,7 @@ export function SearchBar({ value: controlled, debounceMs = 300, onSearch, place
 					onClick={() => setValue('')}
 					aria-label='Clear search'
 				>
-					<X className='size-4' />
+					<X className='size-4' aria-hidden />
 				</button>
 			) : null}
 		</div>

@@ -36,6 +36,12 @@ export type DataTableProps<Row extends Record<string, unknown>> = {
 	className?: string;
 };
 
+function getAriaSort<Row extends Record<string, unknown>>(col: ColumnDef<Row>, sort?: SortState | null) {
+	if (!col.sortable) return undefined;
+	if (sort?.columnId !== col.id) return 'none';
+	return sort.direction === 'asc' ? 'ascending' : 'descending';
+}
+
 function defaultCell<Row extends Record<string, unknown>>(row: Row, col: ColumnDef<Row>) {
 	if (col.renderCell) return col.renderCell(row);
 	if (col.accessorKey) {
@@ -79,26 +85,29 @@ export function DataTable<Row extends Record<string, unknown>>({
 	const total = totalRows ?? rows.length;
 	const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
+	const toggleSort = (col: ColumnDef<Row>) => {
+		const isActive = sort?.columnId === col.id;
+		const nextDir = isActive && sort?.direction === 'asc' ? 'desc' : 'asc';
+		onSortChange?.({ columnId: col.id, direction: nextDir });
+	};
+
 	const headerRow = (
 		<tr className='border-b border-border bg-muted/40 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 			{columns.map((col) => (
-				<th key={col.id} className='px-3 py-2'>
+				<th key={col.id} className='px-3 py-2' scope='col' aria-sort={getAriaSort(col, sort)}>
 					{col.sortable && onSortChange ? (
 						<button
 							type='button'
 							className='inline-flex items-center gap-1 hover:text-foreground'
-							onClick={() => {
-								const isActive = sort?.columnId === col.id;
-								const nextDir = isActive && sort?.direction === 'asc' ? 'desc' : 'asc';
-								onSortChange({ columnId: col.id, direction: nextDir });
-							}}
+							aria-label={`Sort by ${col.header}${sort?.columnId === col.id ? `, currently ${sort.direction}` : ''}`}
+							onClick={() => toggleSort(col)}
 						>
 							{col.header}
 							{sort?.columnId === col.id ? (
 								sort.direction === 'asc' ? (
-									<ArrowUp className='size-3' />
+									<ArrowUp className='size-3' aria-hidden />
 								) : (
-									<ArrowDown className='size-3' />
+									<ArrowDown className='size-3' aria-hidden />
 								)
 							) : null}
 						</button>
@@ -129,7 +138,7 @@ export function DataTable<Row extends Record<string, unknown>>({
 			<div className={cn('w-full space-y-2', className)}>
 				<div className='flex items-center gap-2 text-sm text-muted-foreground'>
 					<Spinner size='sm' />
-					Loading…
+					Loading...
 				</div>
 				<div className='overflow-hidden rounded-[6px] border border-border'>
 					<table className='w-full border-collapse text-sm'>
@@ -154,29 +163,27 @@ export function DataTable<Row extends Record<string, unknown>>({
 		const colTemplate = columns.map(() => 'minmax(0,1fr)').join(' ');
 		return (
 			<div className={cn('w-full space-y-2', className)}>
-				<div className='overflow-hidden rounded-[6px] border border-border'>
+				<div className='overflow-hidden rounded-[6px] border border-border' role='table' aria-rowcount={rows.length} aria-colcount={columns.length}>
 					<div
 						className='grid border-b border-border bg-muted/40 px-3 py-2 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'
 						style={{ gridTemplateColumns: colTemplate }}
+						role='row'
 					>
 						{columns.map((col) => (
-							<div key={col.id} className='min-w-0'>
+							<div key={col.id} className='min-w-0' role='columnheader' aria-sort={getAriaSort(col, sort)}>
 								{col.sortable && onSortChange ? (
 									<button
 										type='button'
 										className='inline-flex items-center gap-1 hover:text-foreground'
-										onClick={() => {
-											const isActive = sort?.columnId === col.id;
-											const nextDir = isActive && sort?.direction === 'asc' ? 'desc' : 'asc';
-											onSortChange({ columnId: col.id, direction: nextDir });
-										}}
+										aria-label={`Sort by ${col.header}${sort?.columnId === col.id ? `, currently ${sort.direction}` : ''}`}
+										onClick={() => toggleSort(col)}
 									>
 										{col.header}
 										{sort?.columnId === col.id ? (
 											sort.direction === 'asc' ? (
-												<ArrowUp className='size-3' />
+												<ArrowUp className='size-3' aria-hidden />
 											) : (
-												<ArrowDown className='size-3' />
+												<ArrowDown className='size-3' aria-hidden />
 											)
 										) : null}
 									</button>
@@ -196,6 +203,8 @@ export function DataTable<Row extends Record<string, unknown>>({
 										ref={virtualizer.measureElement}
 										data-index={vi.index}
 										className='absolute left-0 top-0 grid w-full border-b border-border text-sm'
+										role='row'
+										aria-rowindex={vi.index + 2}
 										style={{
 											height: `${vi.size}px`,
 											transform: `translateY(${vi.start}px)`,
@@ -203,7 +212,7 @@ export function DataTable<Row extends Record<string, unknown>>({
 										}}
 									>
 										{columns.map((col) => (
-											<div key={col.id} className='min-w-0 truncate px-3 py-2'>
+											<div key={col.id} className='min-w-0 truncate px-3 py-2' role='cell'>
 												{defaultCell(row, col)}
 											</div>
 										))}
@@ -214,7 +223,7 @@ export function DataTable<Row extends Record<string, unknown>>({
 					</div>
 				</div>
 				<p className='text-xs text-muted-foreground'>
-					Virtual list: {rows.length.toLocaleString()} rows · overscan · rows use `measureElement` when heights differ from the estimate (
+					Virtual list: {rows.length.toLocaleString()} rows - overscan - rows use `measureElement` when heights differ from the estimate (
 					{virtualRowHeight}px).
 				</p>
 			</div>
@@ -249,17 +258,19 @@ export function DataTable<Row extends Record<string, unknown>>({
 							type='button'
 							className='inline-flex items-center rounded-[6px] border border-input px-2 py-1 hover:bg-accent disabled:opacity-40'
 							disabled={page <= 1}
+							aria-label='Previous page'
 							onClick={() => onPageChange(page - 1)}
 						>
-							<ChevronsLeft className='size-4' /> Prev
+							<ChevronsLeft className='size-4' aria-hidden /> Prev
 						</button>
 						<button
 							type='button'
 							className='inline-flex items-center rounded-[6px] border border-input px-2 py-1 hover:bg-accent disabled:opacity-40'
 							disabled={page >= totalPages}
+							aria-label='Next page'
 							onClick={() => onPageChange(page + 1)}
 						>
-							Next <ChevronsRight className='size-4' />
+							Next <ChevronsRight className='size-4' aria-hidden />
 						</button>
 					</div>
 				</div>

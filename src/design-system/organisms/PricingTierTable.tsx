@@ -38,7 +38,7 @@ export function PricingTierTable({ title = 'Graduated pricing', tiers, className
 							<td className='px-4 py-2 tabular-nums'>{t.from.toLocaleString()}</td>
 							<td className='px-4 py-2 tabular-nums'>{t.to === null ? '∞' : t.to.toLocaleString()}</td>
 							<td className='px-4 py-2 tabular-nums'>{t.unitPrice}</td>
-							<td className='px-4 py-2 tabular-nums text-muted-foreground'>{t.flatFee ?? '—'}</td>
+							<td className='px-4 py-2 tabular-nums text-muted-foreground'>{t.flatFee ?? '-'}</td>
 						</tr>
 					))}
 				</tbody>

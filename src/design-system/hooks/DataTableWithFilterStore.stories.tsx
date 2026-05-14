@@ -58,7 +58,7 @@ function FilteredInvoicesDemo() {
 			<div className='flex flex-wrap items-end gap-4 rounded-[6px] border border-border bg-card p-4'>
 				<div className='min-w-[200px] flex-1'>
 					<SearchBar
-						placeholder='Search customer or id…'
+						placeholder='Search customer or id...'
 						debounceMs={250}
 						onSearch={(q) => {
 							setFilter('search', q);
@@ -82,7 +82,7 @@ function FilteredInvoicesDemo() {
 				</Button>
 			</div>
 			<p className='text-xs text-muted-foreground'>
-				Session fingerprint in URL: <code className='rounded bg-muted px-1 py-0.5'>{fingerprint}</code> · filters persisted under{' '}
+				Session fingerprint in URL: <code className='rounded bg-muted px-1 py-0.5'>{fingerprint}</code> - filters persisted under{' '}
 				<code className='rounded bg-muted px-1 py-0.5'>filters:invoices-story</code>
 			</p>
 			<DataTable<Row>

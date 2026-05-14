@@ -16,7 +16,7 @@ describe('SearchBar', () => {
 		const user = userEvent.setup();
 		const onSearch = vi.fn();
 		render(<SearchBar onSearch={onSearch} debounceMs={40} />);
-		const input = screen.getByRole('textbox', { name: /search…/i });
+		const input = screen.getByRole('textbox', { name: /search.../i });
 		await user.type(input, 'abc');
 		await waitFor(() => expect(onSearch).toHaveBeenCalled(), { timeout: 2000 });
 	});
