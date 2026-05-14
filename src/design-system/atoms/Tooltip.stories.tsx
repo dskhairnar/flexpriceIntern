@@ -33,7 +33,8 @@ export const Default: Story = {
 		const canvas = within(canvasElement);
 		await step('Shows tooltip content on hover', async () => {
 			await userEvent.hover(canvas.getByRole('button', { name: /hover for details/i }));
-			await expect(await within(document.body).findByText(/usage is metered/i)).toBeVisible();
+			const tooltipCopies = await within(document.body).findAllByText(/usage is metered/i);
+			await expect(tooltipCopies[0]).toBeVisible();
 		});
 	},
 };
